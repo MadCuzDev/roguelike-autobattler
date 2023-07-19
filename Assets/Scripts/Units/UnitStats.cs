@@ -7,16 +7,33 @@ namespace Units
     {
         private double _health = 3;
         private bool _canAttack = true;
+        private int _attackDelay = 1000;
+        private float _attackDamage = 1;
         
         public void UseAttack()
         {
             _canAttack = false;
-            Task.Delay(1000).ContinueWith(_=> _canAttack = true);
+            Task.Delay(_attackDelay).ContinueWith(_=> _canAttack = true);
         }
 
         public bool CanAttack()
         {
             return _canAttack;
+        }
+
+        public void SetAttackDelay(int attackDelay)
+        {
+            _attackDelay = attackDelay;
+        }
+
+        public void SetAttackDamage(float attackDamage)
+        {
+            _attackDamage = attackDamage;
+        }
+
+        public float GetAttackDamage()
+        {
+            return _attackDamage;
         }
 
         public Vector3 GetLocation()

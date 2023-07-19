@@ -9,7 +9,6 @@ namespace Game
         public TextMeshProUGUI allyCounterText;
         public TextMeshProUGUI enemyCounterText;
         public TextMeshProUGUI coinCounterText;
-
         
         public GameObject gameUI;
         public GameObject shopUI;
@@ -89,7 +88,25 @@ namespace Game
             if (coins < 5) return;
             
             _battleStats.AddCoins(-5);
-            _spawnController.IncreaseUnitSpeed(1);
+            _spawnController.IncreaseUnitSpeed(.25f);
+        }
+
+        public void UpgradeUnitAttackSpeed()
+        {
+            var coins = _battleStats.GetCoins();
+            if (coins < 5) return;
+            
+            _battleStats.AddCoins(-5);
+            _spawnController.IncreaseUnitAttackSpeed(.8f);
+        }
+        
+        public void UpgradeUnitAttackDamage()
+        {
+            var coins = _battleStats.GetCoins();
+            if (coins < 5) return;
+            
+            _battleStats.AddCoins(-5);
+            _spawnController.IncreaseUnitAttackDamage(.25f);
         }
     }
 }

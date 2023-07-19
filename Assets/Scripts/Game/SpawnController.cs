@@ -1,3 +1,5 @@
+using System;
+using Units;
 using UnityEngine;
 using UnityEngine.AI;
 
@@ -9,10 +11,20 @@ namespace Game
         public Material allyMat;
         public Material enemyMat;
 
-        private int _enemyCount = 10;
+        private int _enemyCount = 7;
         private int _allyCount = 10;
-        private int _allySpeed = 4;
-        private int _allyAcceleration = 8;
+
+        private const float BaseAllySpeed = 4;
+        private const float BaseAllyAcceleration = 8;
+        private const float BaseAllyAngularSpeed = 120;
+        private const float BaseAllyAttackSpeed = 1000;
+        private const float BaseAllyAttackDamage = 1;
+
+        private float _allySpeed = 1;
+        private float _allyAttackSpeed = 1;
+        private float _allyAttackDamage = 1;
+        
+        private int _wave;
 
         private GameObject _allyPrefab;
         private GameObject _enemyPrefab;
@@ -29,18 +41,23 @@ namespace Game
 
         public void SpawnUnits()
         {
+            _wave++;
             RespawnPlayer();
             for (var i = 0; i < _allyCount; i++)
             {
                 var allyUnit = Instantiate(unitPrefab);
                 allyUnit.transform.position = new Vector3((i*2)-_allyCount, 1, -10);
                 allyUnit.GetComponent<Renderer>().material = allyMat;
-                allyUnit.GetComponent<NavMeshAgent>().speed = _allySpeed;
-                allyUnit.GetComponent<NavMeshAgent>().acceleration = _allyAcceleration + (_allySpeed * 2);
+                allyUnit.GetComponent<NavMeshAgent>().speed = BaseAllySpeed * _allySpeed;
+                allyUnit.GetComponent<NavMeshAgent>().acceleration = BaseAllyAcceleration * _allySpeed;
+                allyUnit.GetComponent<NavMeshAgent>().angularSpeed = BaseAllyAngularSpeed * _allySpeed;
+                allyUnit.GetComponent<UnitStats>().SetAttackDelay((int)(BaseAllyAttackSpeed * _allyAttackSpeed));
+                allyUnit.GetComponent<UnitStats>().SetAttackDamage(BaseAllyAttackDamage * _allyAttackDamage);
                 allyUnit.tag = "Ally";
             }
-            
-            for (var i = 0; i < _enemyCount; i++)
+
+            var enemiesToSpawn = _enemyCount + _wave;
+            for (var i = 0; i < enemiesToSpawn; i++)
             {
                 var enemyUnit = Instantiate(unitPrefab);
                 enemyUnit.transform.position = new Vector3((i*2)-_enemyCount, 1, 30);
@@ -75,9 +92,19 @@ namespace Game
             else _enemyCount += amount;
         }
 
-        public void IncreaseUnitSpeed(int amount)
+        public void IncreaseUnitSpeed(float amount)
         {
             _allySpeed += amount;
+        }
+
+        public void IncreaseUnitAttackSpeed(float amount)
+        {
+            _allyAttackSpeed *= amount;
+        }
+        
+        public void IncreaseUnitAttackDamage(float amount)
+        {
+            _allyAttackDamage += amount;
         }
     }
 }
