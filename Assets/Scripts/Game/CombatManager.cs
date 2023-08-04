@@ -15,10 +15,13 @@ namespace Game
 
         public void Attack(UnitStats attacker, UnitStats target, double damage)
         {
-            if (!attacker.CanAttack()) return;
+            if (attacker != default)
+            {
+                if (!attacker.CanAttack()) return;
+                attacker.UseAttack();
+            }
             target.DoDamage(damage);
-            attacker.UseAttack();
-
+            
             if (target.GetHealth() > 0) return;
             Debug.Log(target.GetGameObject().name + " died");
             var isEnemy = target.CompareTag("Enemy");
